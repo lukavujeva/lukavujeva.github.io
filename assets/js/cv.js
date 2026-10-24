@@ -105,7 +105,7 @@
 			container.innerHTML = '';
 			wrappers.forEach(function(wrapper) { container.appendChild(wrapper); });
 		}).catch(function() {
-			container.innerHTML = '<p>The CV could not be displayed here, but you can still download it above.</p>';
+			container.innerHTML = '<p>The CV could not be displayed here, but you can still download it below.</p>';
 		});
 	}
 
