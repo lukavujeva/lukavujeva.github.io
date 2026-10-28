@@ -1,8 +1,9 @@
 /*
-	CV viewer: renders the PDF linked by #cv-pdf into #cv-pages as page images
+	PDF viewer: renders the PDF linked by #pdf-link into #pdf-pages as page images
 	that fit the article width. Mobile browsers can't show a PDF in an iframe,
-	so this keeps the CV readable everywhere. To update the CV, just change the
-	href of the #cv-pdf link in index.html.
+	so this keeps the PDF readable everywhere. Used by the CV in index.html and by
+	the hidden paper page; to change which PDF is shown, change the href of the
+	#pdf-link (Download PDF) link on that page.
 */
 
 (function() {
@@ -10,8 +11,8 @@
 	var PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/',
 		PDFJS_SRI = 'sha512-q+4liFwdPC/bNdhUpZx6aXDx/h77yEQtn4I1slHydcbZK34nLaR3cAeYSJshoxIOq3mjEf7xJE8YWIUHMn+oCQ==';
 
-	var link = document.getElementById('cv-pdf'),
-		container = document.getElementById('cv-pages');
+	var link = document.getElementById('pdf-link'),
+		container = document.getElementById('pdf-pages');
 
 	if (!link || !container || !window.ResizeObserver || !window.Promise)
 		return;
@@ -21,7 +22,7 @@
 		renderId = 0,
 		timer = null;
 
-	// Load pdf.js only once the CV article is actually opened.
+	// Load pdf.js only once the article is actually opened.
 	function loadPdf() {
 		if (!pdf)
 			pdf = new Promise(function(resolve, reject) {
@@ -42,7 +43,7 @@
 	}
 
 	function renderPage(page, width) {
-		// On touch screens, render extra pixels so the CV stays sharp when pinch-zoomed.
+		// On touch screens, render extra pixels so the PDF stays sharp when pinch-zoomed.
 		var touch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches,
 			ratio = Math.max(window.devicePixelRatio || 1, touch ? 1600 / width : 0),
 			viewport = page.getViewport({ scale: width / page.getViewport({ scale: 1 }).width }),
@@ -89,7 +90,7 @@
 		var id = ++renderId;
 
 		if (!container.firstChild)
-			container.innerHTML = '<p>Loading CV&hellip;</p>';
+			container.innerHTML = '<p>Loading PDF&hellip;</p>';
 
 		loadPdf().then(function(doc) {
 			var pages = [];
@@ -105,7 +106,7 @@
 			container.innerHTML = '';
 			wrappers.forEach(function(wrapper) { container.appendChild(wrapper); });
 		}).catch(function() {
-			container.innerHTML = '<p>The CV could not be displayed here, but you can still download it below.</p>';
+			container.innerHTML = '<p>The PDF could not be displayed here, but you can still download it below.</p>';
 		});
 	}
 
